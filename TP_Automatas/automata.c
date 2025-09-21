@@ -1,6 +1,12 @@
+/*
+Incluyo librerías básicas
+*/
+#include <stdio.h>
+#include <ctype.h>
+
 int columna (char c) //{}
 {
-  if( perteneceAlGrupo(c, int grupo)) // podemos hacer una funcion que nos retorne el grupo directamente
+  if(perteneceAlGrupo(c, int grupo)) // podemos hacer una funcion que nos retorne el grupo directamente
   {
     return i;    
   }
@@ -9,7 +15,7 @@ int columna (char c) //{}
 
 int esPalabra(char* cadena)
 {
-  static int tt^[fila][columna]= { {},
+  static int tt[fila][columna]= { {},
                                    {},
                                    {},
                                    {},
