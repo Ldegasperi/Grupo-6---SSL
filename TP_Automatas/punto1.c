@@ -8,7 +8,7 @@ int columna(int c)
 	if(c == '0') return 1;
 	if(c == 'x') return 2;
 	if(c == '#') return 3;
-	if(c >= 1 && c <= '7') return 4;
+	if(c >= '1' && c <= '7') return 4;
 	if(c == '8' || c == '9') return 5;
 	if(c >= 'A' && c <= 'F') return 6;
 	return 7;
@@ -173,3 +173,4 @@ int main()
 	}while(seguir);
 	
 }
+
