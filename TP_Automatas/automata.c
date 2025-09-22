@@ -52,8 +52,6 @@ int verifica(char* cadena) // verifica que la cadena contenga solo caracteres de
 // Función Punto 2)
 /*
 Recibe como caracter (char) un número y devuelve un número (int)
-Cada carácter numérico tiene un código ascii asociado, entonces para convertirlo a un número lo que hacemos la resta de:
-código_ascii_del_caracter - código_ascii_del_cero 
 */
 int convertirANumero(char caracter)
 {

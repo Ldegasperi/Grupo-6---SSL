@@ -10,7 +10,7 @@ int esValido(char c) {
     return (isdigit(c) || esOperador(c));
 }
 
-int validarCdena (char *expresion){
+int validarCadena (char *expresion){
     int i = strlen (expresion);
     if (i==0) return 0;
     if(esOperador(expresion[0]|| esOperador(expresion[i-1])))return 0;
