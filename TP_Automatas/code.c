@@ -2,6 +2,14 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+// TOP DOWN
+/* int es_palabra(char* cadena, int tt[][], columna [])
+   typedef struct { char caracter, int valor } columna;
+   int columna (int c, columna []) {
+        algoritmo que busca el valor q le corresponde a ese caracter recorriendo la lista de columnas
+        return num_columna;
+   }
+*/
 
 /* PUNTO 1 */
 int es_palabra(char* cadena, int* cant_hexadecimales, int* cant_octales, int* cant_decimales)
@@ -70,18 +78,18 @@ void contar_tipo(int e, int* contador, int* cant_hexadecimales, int* cant_octale
 
 /*PUNTO 2*/
 
-int convertirANumero(char caracter)
+int caracterANumero(char caracter)
 {
   return caracter -'0';
 }
 
-int caracterANumero(char* cadena){
+int convertirANumero(char* cadena){
     
     int i = 0;
     int acumulador = 0;
     int c = cadena[i];
     while(c != '\0'){
-        int numeroAgregado = convertirANumero(c);
+        int numeroAgregado = caracterANumero(c);
         acumulador = acumulador * 10 + numeroAgregado;
         i++;
         c = cadena[i];
@@ -92,6 +100,84 @@ int caracterANumero(char* cadena){
 /*FIN PUNTO 2*/
 
 /*PUNTO 3*/
+int es_palabra_p3(char* cadena)
+{
+	static int tt[3][3] =  {
+                            {2,1,2},
+                            {1,1,0}, // Cambie estado 4 por 2 por simplicidad 
+                            {2,2,2}
+                            }; 
+    int e=0;
+    int i=0;
+    int c = cadena[i];
+    while(c!='\0')
+    {
+        e = tt[0][columna(c)];
+        i++;
+        c=cadena[i];
+    }
+    if(e==1)
+        return 1; // Chequea que el estado en el cual termino se uno de aceptación
+    return 0;
+}
+
+int columna_p3(char c)
+{
+	if(c=='0')
+        return 0;
+    if(c=='-' || c == '+' || c=='*' || c=='/')
+        return 2;
+	if(c>='1' && c <= '9')
+		return 1;
+}
+
+int calculo(char* cadena)
+{
+	if(es_palabra_p3(cadena))
+	{
+		int resultado;
+		int numeros[length(cadena)];
+		char operadores[length(cadena)/2;] // creo q no es necesario pero maximo va a haber largoCadena/2 division entera 
+		int i=0;
+		int operador=0;
+		int numero = 0;
+		while(i!=length(cadena))
+		{
+			if(cadena[i] == '+'|| cadena[i] == '-'||cadena[i] == '/'||cadena[i] == '*')
+				operadores[operador]= cadena[i];
+			else
+			{
+				char* cadena_intermedia;
+				int j=i;
+				int k= 0;
+				while(j!=length(cadena) && cadena[j+1]<='9' && cadena[j+1]>='0') // corre mientras el siguiente caracter sea un numero
+				{
+					*(cadena_intermedia[k])=cadena[j]; // tengo q buscarlo p0rque no me acuerdo
+					j++;
+				}
+				numeros[numero]= convertirANumero(*cadena_intermedia); // Pongo un else directamente porque ya fue chequeado que fuese palabra				
+			} 
+			i++;
+		}
+		i=0;
+		while(i!= length(operadores) && operadores[0]!= 0){ // Se saca de encima todos los */ para luego resolver todos los + -
+			if(operadores[i]=='*' || operadores[i]=='/')
+			{
+				calcular(); // Desarrollar
+			}
+		}
+		i=0;
+		while(i!= length(operadores) && operadores[0]!= 0){
+			if(operadores[i]=='+' || operadores[i]=='-')
+			{
+				calcular();
+			}
+		}
+			return resultado;
+	}
+	return 0; // ERROR
+}
+
 int esOperador(char c){
      return (c == '+' || c == '-' || c == '*' || c == '/');
 }
