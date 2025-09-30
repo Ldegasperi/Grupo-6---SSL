@@ -1,24 +1,83 @@
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-int esOperador(char c){
-     return (c == '+' || c == '-' || c == '*' || c == '/');
-}
+typedef struct Nodo {
+    int info;
+    struct Nodo* sgte;
+} Nodo;
 
 
-int esValido(char c) {
-    return (isdigit(c) || esOperador(c));
-}
-
-int validarCadena (char *expresion){
-    int i = strlen (expresion);
-    if (i==0) return 0;
-    if(esOperador(expresion[0]|| esOperador(expresion[i-1])))return 0;
-
-    for(int j=0; j<i;i++){
-        if(!esValido(expresion[i])) return 0;
+void push(Nodo **pila, int valor) {
+    Nodo *nuevo = (Nodo*) malloc(sizeof(Nodo));
+    if (!nuevo) {
+        printf("Error: no se pudo asignar memoria\n");
+        return;
     }
-    if (esOperador(expresion[j]) && esOperador(expresion[j+1]))return 0;
+    nuevo->info = valor;
+    nuevo->sgte = *pila;
+    *pila = nuevo;
+}
 
-return 1;
+int pop(Nodo **pila) {
+    int ret = (*pila)->info;
+    Nodo *aux = *pila;
+    *pila = aux->sgte;
+    free(aux);
+    return ret;
+}
+
+
+int evaluarPostfijo() {
+    Nodo *pila = NULL;
+    char token[50];
+
+    printf("Ingrese la expresion en notacion postfija (termine con '='):\n");
+
+    while (1) {
+        scanf("%s", token);
+
+        // condición de corte
+        if (token[0] == '=') {
+            break;
+        }
+
+        // si es número (positivo o negativo)
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
+            push(&pila, atoi(token));
+        }
+        // si es operador
+        else {
+            int b = pop(&pila);
+            int a = pop(&pila);
+
+            int resultado = 0;
+            switch (token[0]) {
+                case '+': resultado = a + b; break;
+                case '-': resultado = a - b; break;
+                case '*': resultado = a * b; break;
+                case '/':
+                    if (b == 0) {
+                        printf("Error: división por cero\n");
+                        return 0;
+                    }
+                    resultado = a / b; 
+                    break;
+                default:
+                    printf("Operador no válido: %s\n", token);
+                    return 0;
+            }
+            push(&pila, resultado);
+        }
+    }
+
+    int resultado = pop(&pila);
+    return resultado;
+}
+
+
+int main() {
+    int resultado = evaluarPostfijo();
+    printf("Resultado: %d\n", resultado);
+    return 0;
 }
