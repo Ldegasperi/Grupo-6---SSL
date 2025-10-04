@@ -15,7 +15,7 @@ int retornar_columna(int c, int consigna_seleccionada)
 	if(consigna_seleccionada == 1){
 		if(c == '-' || c == '+') return 0;
 		if(c == '0') return 1;
-		if(c == 'x') return 2;
+		if(c == 'x' || c=='X') return 2;
 		if(c == '#') return 3;
 		if(c >= '1' && c <= '7') return 4;
 		if(c == '8' || c == '9') return 5;
@@ -56,7 +56,7 @@ int es_palabra_punto_uno(char* cadena, int* cant_hexadecimales, int* cant_octale
 	int i = 0;					
 	char c = cadena[i];
 
-	static int tt[7][10] = 	{	// alfabeto ampliado, teniendo como ultima fila el estado de rechazo y como ultima columna a todo caracter que no pertenezca al lenguaje
+	static int tt[10][7] = 	{	// alfabeto ampliado, teniendo como ultima fila el estado de rechazo y como ultima columna a todo caracter que no pertenezca al lenguaje
 								{1,2,9,9,3,3,9},
 								{9,9,9,9,3,3,9},
 								{9,3,4,5,3,3,9},
@@ -73,15 +73,15 @@ int es_palabra_punto_uno(char* cadena, int* cant_hexadecimales, int* cant_octale
 	// Para saber si tengo que seguir reconociendo o esperar al siguiente #
 	int contador = 1;
 	
-	while(c != '\0' && e != 7){
+	while(c != '\0' && e != 9){
 		e = tt[e][retornar_columna(c, consigna_seleccionada)];	
 		contar_tipo(e, &contador, cant_hexadecimales, cant_octales, cant_decimales);
 		i++;
 		c = cadena[i];
 	}
 	
-	if(e == 2 || e == 3 || e == 4 || e == 6) return 1;
-	
+	if(e == 2 || e == 3 || e == 6 || e == 7) return 1; // Chequea que haya terminado en un estado final, en ese caso devuelve 1 (verdadero)
+	printf("La palabra no es válida.");
 	return 0;
 }
 
