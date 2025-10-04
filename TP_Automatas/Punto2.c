@@ -1,7 +1,5 @@
-int convertirANumero(char caracter)
-{
-  return caracter -'0';
-}
+#include <stdio.h>
+#include <ctype.h>
 
 int caracterANumero(char* cadena){
     
@@ -9,7 +7,7 @@ int caracterANumero(char* cadena){
     int acumulador = 0;
     int c = cadena[i];
     while(c != '\0'){
-        int numeroAgregado = convertirANumero(c);
+        int numeroAgregado = c -'0';
         acumulador = acumulador * 10 + numeroAgregado;
         i++;
         c = cadena[i];
@@ -23,4 +21,5 @@ main(){
     scanf("%s", &numero);
     int numeroDado = caracterANumero(numero);
     printf("%i\n",numeroDado);
+
 }
