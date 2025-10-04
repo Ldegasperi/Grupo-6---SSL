@@ -56,15 +56,17 @@ int es_palabra_punto_uno(char* cadena, int* cant_hexadecimales, int* cant_octale
 	int i = 0;					
 	char c = cadena[i];
 
-	static int tt[8][8] = 	{	// alfabeto ampliado, teniendo como ultima fila el estado de rechazo y como ultima columna a todo caracter que no pertenezca al lenguaje
-								{1,2,7,7,1,1,7,7},
-								{7,7,7,7,3,3,7,7},
-								{7,4,5,0,4,7,7,7},
-								{7,3,7,0,3,3,7,7},
-								{7,4,7,0,4,7,7,7},
-								{7,6,7,7,6,6,6,7},
-								{7,6,7,0,6,6,6,7},
-								{7,7,7,7,7,7,7,7}							
+	static int tt[7][10] = 	{	// alfabeto ampliado, teniendo como ultima fila el estado de rechazo y como ultima columna a todo caracter que no pertenezca al lenguaje
+								{1,2,9,9,3,3,9},
+								{9,9,9,9,3,3,9},
+								{9,3,4,5,3,3,9},
+								{9,3,9,5,3,3,9},
+								{9,6,9,9,7,7,7},
+								{1,8,9,9,3,3,9},
+								{9,9,9,5,9,9,9},
+								{9,7,9,5,7,7,7},
+								{9,6,4,9,3,3,9},
+								{9,9,9,9,9,9,9}
 							};
 	
 	
