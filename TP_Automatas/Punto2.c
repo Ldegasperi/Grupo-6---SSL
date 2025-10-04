@@ -4,15 +4,15 @@
 int caracterANumero(char* cadena){
     
     int i = 0;
-    int acumulador = 0;
+    int resultado = 0;
     int c = cadena[i];
     while(c != '\0'){
-        int numeroAgregado = c -'0';
-        acumulador = acumulador * 10 + numeroAgregado;
+        int charAInt = c -'0';
+        resultado = resultado * 10 + charAInt;
         i++;
         c = cadena[i];
     }
-    return acumulador;
+    return resultado;
 }
 
 main(){
