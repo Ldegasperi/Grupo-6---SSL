@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 // TOP DOWN
 /* int es_palabra(char* cadena, int tt[][], columna [])
@@ -100,6 +101,7 @@ void limpiar_cadena(int longitud, char* cadena){
 		cadena[i] = '\0';
 	}
 }
+
 int convertir_a_numero(char* cadena){
     int i = 0;
     int acumulador = 0;
@@ -115,7 +117,6 @@ int convertir_a_numero(char* cadena){
 }
 
 /*FIN PUNTO 2*/
-
 
 /*PUNTO 3*/
 
@@ -139,6 +140,134 @@ int es_palabra_punto_tres(char* cadena, int consigna_seleccionada)
     return 0;
 }
 
+// CODIGO PARA RESOLVER PRECEDENCIA DE OPERACIONES
+typedef struct Nodo {
+    int info;
+    struct Nodo* sgte;
+} Nodo;
+
+void push(Nodo **pila, int valor) {
+    Nodo *nuevo = (Nodo*) malloc(sizeof(Nodo));
+    if (!nuevo) {
+        printf("Error: no se pudo asignar memoria\n");
+        return;
+    }
+    nuevo->info = valor;
+    nuevo->sgte = *pila;
+    *pila = nuevo;
+}
+
+int pop(Nodo **pila) {
+    int ret = (*pila)->info;
+    Nodo *aux = *pila;
+    *pila = aux->sgte;
+    free(aux);
+    return ret;
+}
+
+int esOperador(char c) {
+    return (c == '*' || c == '/' || c == '+' || c == '-');
+}
+
+int evaluarPostfijo(char* cadena) {
+    Nodo *pila = NULL;
+	int i = 0;
+    while (cadena[i] != '\0') {
+      
+        // si es operador
+        if (esOperador(cadena[i])) {
+            int b = pop(&pila);
+            int a = pop(&pila);
+
+            int resultado = 0;
+            switch (cadena[i]) {
+                case '+': resultado = a + b; break;
+                case '-': resultado = a - b; break;
+                case '*': resultado = a * b; break;
+                case '/':
+                    if (b == 0) {
+                        printf("Error: división por cero\n");
+                        return 0;
+                    }
+                    resultado = a / b; 
+                    break;
+                default:
+                    printf("Operador no válido: %s\n", cadena);
+                    return 0;
+            }
+            push(&pila, resultado); 
+        }
+        // si es numero
+        else {
+        	push(&pila, caracter_a_numero(cadena[i]));
+        }
+        i++;
+    }
+
+    int resultado = pop(&pila);
+    return resultado;
+}
+// FIN DE CODIGO PARA RESOLVER PRECEDENCIA DE OPERACIONES
+
+// CODIGO PARA PASAR DE INFIJA A POSFIJA
+int prec(char c) {
+    if (c == '^')
+    return 3;
+    else if (c == '/' || c == '*')
+    return 2;
+    else if (c == '+' || c == '-')
+    return 1;
+    else
+    return -1;
+}
+
+// Check if operator is right-associative
+int isRightAssociative(char c) {
+    return c == '^';
+}
+
+char* infixToPostfix(char* exp) {
+    int len = strlen(exp);
+    char* result = (char*)malloc((len + 1) * sizeof(char));
+    char* stack = (char*)malloc(len * sizeof(char));
+    int j = 0;
+    int top = -1;
+    
+    for (int i = 0; i < len; i++) {
+        char c = exp[i];
+        
+        if (isalnum(c)) {
+            result[j++] = c;
+        }
+        else if (c == '(') {
+            stack[++top] = '(';
+        }
+        else if (c == ')') {
+            while (top != -1 && stack[top] != '(') {
+                result[j++] = stack[top--];
+            }
+            top--; 
+        }
+        else {
+            while (top != -1 && stack[top] != '(' &&
+                (prec(stack[top]) > prec(c) ||
+                (prec(stack[top]) == prec(c) && !isRightAssociative(c)))) {
+                result[j++] = stack[top--];
+            }
+            stack[++top] = c;
+        }
+    }
+    
+    while (top != -1) {
+        result[j++] = stack[top--];
+    }
+    
+    result[j] = '\0';
+    free(stack);
+    return result;  // ahora es válido
+}
+
+// FIN DE CODIGO PARA PASAR DE INFIJA A POSFIJA
 
 /*FUNCIONES DE INTERACCIÓN CON EL USUARIO*/
 void imprimir_titulo()
@@ -189,7 +318,6 @@ void activar_opciones_consignas(int* opc)
 	pedir_opcion_menu(1, 2, opc);
 }
 
-
 void* pedir_cadena(int consigna_seleccionada, int opc, char* cadena)
 {
 	char directorio_cadena[] = "./cadena.txt";
@@ -206,100 +334,6 @@ void* pedir_cadena(int consigna_seleccionada, int opc, char* cadena)
     		fgets(cadena, 100, fp);
 		}
 	}
-}
-
-
-int realizar_multiplicaciones_y_divisiones(char* operadores, int* operandos){
-	int i = 0;
-	while(operadores[i] != '\0'){
-		if(operadores[i] == '*' || operadores[i] == '/'){
-		//	printf("Realizando operacion %c entre %d y %d\n", operadores[i], operandos[i], operandos[i+1]); // debug
-			if(operadores[i] == '*'){
-				operandos[i] = operandos[i] * operandos[i+1];
-			}else{
-				operandos[i] = operandos[i] / operandos[i+1];
-			}
-
-			// Una vez que hice la operacion muevo todos los elementos desde el resultado una posicion a la izquierda incluido el fin de cadena para que me sirva de corte en la proxima iteracion
-			for(int j = i; operadores[j] != '\0'; j++){
-				operandos[j+1] = operandos[j+2];
-				operadores[j] = operadores[j+1];
-			}
-		}else{
-			i++;
-		}
-	}
-}
-
-int realizar_sumas_y_restas(char* operadores, int* operandos){
-	int i = 0;
-	while(operadores[i] != '\0'){
-		//	printf("Realizando operacion %c entre %d y %d\n", operadores[i], operandos[i], operandos[i+1]); // debug
-			if(operadores[i] == '+' || operadores[i] == '-'){
-			if(operadores[i] == '+'){
-				operandos[i] = operandos[i] + operandos[i+1];
-			}else{
-				operandos[i] = operandos[i] - operandos[i+1];
-			}
-			for(int j = i; operadores[j] != '\0'; j++){
-				operandos[j+1] = operandos[j+2];
-				operadores[j] = operadores[j+1];
-			}
-		}else{
-			i++;
-		}
-	}
-}
-
-int resolver_segun_precedencia(char* operadores, int* operandos){
-	realizar_multiplicaciones_y_divisiones(operadores, operandos);
-	realizar_sumas_y_restas(operadores, operandos);
-
-	return operandos[0];
-}
-
-int es_operador(char c){
-	 return (c == '+' || c == '-' || c == '*' || c == '/');
-}
-
-void separar_operadores_de_operandos(char* operadores, int* operandos, char* cadena){
-
-	int cant_operadores = 0;
-	int cant_operandos = 0;
-	int i = 0; // Recorre la cadena
-	int n = 0; // Para guardar los numeros char en la cadena que va a ser transformada a entero
-	char numero[100]; // Caso limite es que sea un numero de 100 digitos
-	while(cadena[i] != '\0'){
-		
-		if(es_operador(cadena[i])){
-			operadores[cant_operadores] = cadena[i];
-			cant_operadores++;
-			i++;
-		}else if(cadena[i] >= '0' && cadena[i] <= '9'){
-			n = 0; // Muevo iterador a posicion 0
-
-			// Avanzando hasta recuperarlo todos los digitos
-			do{
-				numero[n] = cadena[i]; // Guardo las cifras en formato char
-				i++; n++; // Avanzo ambas cadenas
-			}while(!es_operador(cadena[i]) && cadena[i] != '\0'); // Hasta encontrarme un operador o el final de la cadena
-			
-			operandos[cant_operandos] = convertir_a_numero(numero); // Guardo en los operandos el numero char convertido a entero
-			cant_operandos++;	
-		}
-	}
-}
-
-
-int realizar_operacion(char* cadena){
-	int i = 0;
-	// El caso limite es de 49 operandos y 51 operadores si es que admitimos cadenas de 100 caracteres (ver si se puede hacer dinamico)
-	char operadores[49]; 
-	int operandos[51];
-
-	separar_operadores_de_operandos(operadores, operandos, cadena);
-
-	return resolver_segun_precedencia(operadores, operandos);
 }
 
 void ejecutar_consigna(int consigna_seleccionada, char* cadena)
@@ -325,9 +359,11 @@ void ejecutar_consigna(int consigna_seleccionada, char* cadena)
 		} 
 	}else{
 		if(es_palabra_punto_tres(cadena, consigna_seleccionada)){
+    		char* posfijo = infixToPostfix(cadena);	
 			printf("%-*s |\n", 72, "Es palabra del lenguaje");
 			printf("|                                                                                     |\n");
-			printf("| Resultado de la operacion: "); printf("%-*d |\n", 56, realizar_operacion(cadena));
+			printf("| Resultado de la operacion: "); printf("%-*d |\n", 56, evaluarPostfijo(posfijo));
+    		free(posfijo); // liberar memoria
 		}else{
 			printf("%-*s |\n", 72, "No es palabra del lenguaje");
 		}
@@ -342,7 +378,6 @@ void activar_opciones_seguir(int* seguir)
 	pedir_opcion_menu(0, 1, seguir);
 }
 /*FIN FUNCIONES DE INTERACCIÓN CON EL USUARIO*/
-
 
 /*Main*/
 int main()
