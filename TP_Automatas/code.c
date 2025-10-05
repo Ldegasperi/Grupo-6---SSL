@@ -33,25 +33,33 @@ int retornar_columna(int c, int consigna_seleccionada)
 
 
 /* PUNTO 1 */
-void contar_tipo(int e, int* contador, int* cant_hexadecimales, int* cant_octales, int* cant_decimales)
+void contar_tipos(char* cadena, int* cant_hexadecimales, int* cant_octales, int* cant_decimales)
 {	
-	if(*contador){
-		if(e == 1 || e == 3){
-			(*cant_decimales)++;	
-			(*contador) = 0;
-		}
-		if(e == 2) (*cant_octales)++;
-		if(e == 5) {
-			(*cant_hexadecimales)++;	
-			(*cant_octales)--;			
-		}
-	}
+	int i = 0;
+	char c = cadena[i]; 
+	bool analizar = true;
 	
-	if(e == 0) (*contador) = 1;
-
+	while(c != '\0'){
+		
+		if(analizar){
+			if(c != '0'){ // Decimales NO empiezan por cero
+				(*cant_decimales)++;
+			}else if(cadena[i+1] == 'x'){ // Si empieza por cero y ademas el caracter siguiente es una x
+				(*cant_hexadecimales)++;
+			}else{	 // Si empieza por cero y el caracter siguiente no es una x
+				(*cant_octales)++;
+			}
+			analizar = !analizar;	
+		}
+		
+		if(c == '#') analizar = !analizar;
+		
+		i++;
+		c = cadena[i]; 
+	}
 }
 
-int es_palabra_punto_uno(char* cadena, int* cant_hexadecimales, int* cant_octales, int* cant_decimales, int consigna_seleccionada)
+int es_palabra_punto_uno(char* cadena, int consigna_seleccionada)
 {
 	int e = 0;						
 	int i = 0;					
@@ -76,7 +84,6 @@ int es_palabra_punto_uno(char* cadena, int* cant_hexadecimales, int* cant_octale
 	
 	while(c != '\0' && e != 9){
 		e = tt[e][retornar_columna(c, consigna_seleccionada)];	
-		contar_tipo(e, &contador, cant_hexadecimales, cant_octales, cant_decimales);
 		i++;
 		c = cadena[i];
 	}
@@ -347,7 +354,8 @@ void ejecutar_consigna(int consigna_seleccionada, char* cadena)
 	printf("|                                                                                     |\n");
 	printf("| Resultado: ");
 	if(consigna_seleccionada == 1){
-		if(es_palabra_punto_uno(cadena, &cant_hexadecimales, &cant_octales, &cant_decimales, consigna_seleccionada)) {
+		if(es_palabra_punto_uno(cadena, consigna_seleccionada)) {
+			contar_tipos(cadena, &cant_hexadecimales, &cant_octales, &cant_decimales);
 			printf("%-*s |\n", 72, "Es palabra del lenguaje");
 			printf("|                                                                                     |\n");
 			printf("| Cantidad de decimales: "); printf("%-*d |\n", 60, cant_decimales);
