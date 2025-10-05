@@ -37,28 +37,59 @@ void contar_tipos(char* cadena, int* cant_hexadecimales, int* cant_octales, int*
 {	
 	int i = 0;
 	char c = cadena[i]; 
-	bool analizar = true;
+	int analizar = 1; // Pseudo booleano	
 	
 	while(c != '\0'){
 		
-		if(analizar){
-			if(c != '0'){ // Decimales NO empiezan por cero
+		if(analizar == 1){
+			if(c != '0' || (c == '0' && cadena[i+1] == '#')){ // Decimales NO empiezan por cero
 				(*cant_decimales)++;
 			}else if(cadena[i+1] == 'x'){ // Si empieza por cero y ademas el caracter siguiente es una x
 				(*cant_hexadecimales)++;
 			}else{	 // Si empieza por cero y el caracter siguiente no es una x
 				(*cant_octales)++;
 			}
-			analizar = !analizar;	
+			analizar = 0;	
 		}
 		
-		if(c == '#') analizar = !analizar;
+		if(c == '#') analizar = 1;
 		
 		i++;
 		c = cadena[i]; 
 	}
 }
 
+int es_palabra(char* cadena, int filas, int columnas, int tt[filas][columnas], int consigna_seleccionada)
+{
+	int e = 0;						
+	int i = 0;					
+	char c = cadena[i];
+
+	int contador = 1;
+	
+	if(consigna_seleccionada == 1)
+	{
+		while(c != '\0' && e != 9){
+			e = tt[e][retornar_columna(c, consigna_seleccionada)];	
+			i++;
+			c = cadena[i];
+		}
+		if(e == 2 || e == 3 || e == 6 || e == 7) return 1; // Chequea que haya terminado en un estado final, en ese caso devuelve 1 (verdadero)
+		return 0;
+	} else if (consigna_seleccionada == 2)
+	{
+		while(c != '\0' && e != 2)
+		{
+			e = tt[e][retornar_columna(c, consigna_seleccionada)];
+			i++;
+			c=cadena[i];
+		}
+		if(e==1) return 1; // Chequea que el estado en el cual termino se uno de aceptación
+		return 0;
+	}
+}
+
+/*
 int es_palabra_punto_uno(char* cadena, int consigna_seleccionada)
 {
 	int e = 0;						
@@ -92,7 +123,7 @@ int es_palabra_punto_uno(char* cadena, int consigna_seleccionada)
 	printf("La palabra no es válida.");
 	return 0;
 }
-
+*/
 
 
 /*FIN PUNTO 1*/
@@ -103,30 +134,10 @@ int caracter_a_numero(char caracter)
   return caracter - '0';
 }
 
-void limpiar_cadena(int longitud, char* cadena){
-	for(int i = 0; i < longitud; i++){
-		cadena[i] = '\0';
-	}
-}
-
-int convertir_a_numero(char* cadena){
-    int i = 0;
-    int acumulador = 0;
-    int c = cadena[i];
-    while(c != '\0' ){
-        acumulador = acumulador * 10 + caracter_a_numero(c);
-        i++;
-        c = cadena[i];
-    }
-	/* printf("Numero convertido: %d\n", acumulador); // debug */
-	limpiar_cadena(i, cadena); // Limpio la cadena para que no queden digitos de algun otro numero anterior
-    return acumulador;
-}
-
 /*FIN PUNTO 2*/
 
 /*PUNTO 3*/
-
+/*
 int es_palabra_punto_tres(char* cadena, int consigna_seleccionada)
 {
 	static int tt[4][4] =  {
@@ -146,7 +157,7 @@ int es_palabra_punto_tres(char* cadena, int consigna_seleccionada)
     if(e==1) return 1; // Chequea que el estado en el cual termino se uno de aceptación
     return 0;
 }
-
+*/
 // CODIGO PARA RESOLVER PRECEDENCIA DE OPERACIONES
 typedef struct Nodo {
     int info;
@@ -343,7 +354,7 @@ void* pedir_cadena(int consigna_seleccionada, int opc, char* cadena)
 	}
 }
 
-void ejecutar_consigna(int consigna_seleccionada, char* cadena)
+void ejecutar_consigna(int consigna_seleccionada, char* cadena, int filas, int columnas, int tt[filas][columnas])
 {
 	int cant_hexadecimales = 0;
 	int cant_octales = 0;
@@ -354,7 +365,7 @@ void ejecutar_consigna(int consigna_seleccionada, char* cadena)
 	printf("|                                                                                     |\n");
 	printf("| Resultado: ");
 	if(consigna_seleccionada == 1){
-		if(es_palabra_punto_uno(cadena, consigna_seleccionada)) {
+		if(es_palabra(cadena, filas, columnas, tt, consigna_seleccionada)) {
 			contar_tipos(cadena, &cant_hexadecimales, &cant_octales, &cant_decimales);
 			printf("%-*s |\n", 72, "Es palabra del lenguaje");
 			printf("|                                                                                     |\n");
@@ -366,7 +377,7 @@ void ejecutar_consigna(int consigna_seleccionada, char* cadena)
 			printf("%-*s |\n", 72, "No es palabra del lenguaje");
 		} 
 	}else{
-		if(es_palabra_punto_tres(cadena, consigna_seleccionada)){
+		if(es_palabra(cadena, filas, columnas, tt, consigna_seleccionada)){
     		char* posfijo = infixToPostfix(cadena);	
 			printf("%-*s |\n", 72, "Es palabra del lenguaje");
 			printf("|                                                                                     |\n");
@@ -390,6 +401,27 @@ void activar_opciones_seguir(int* seguir)
 /*Main*/
 int main()
 {
+
+	static int tt_punto_1[10][7] = 	{	
+							{1,2,9,9,3,3,9},
+							{9,9,9,9,3,3,9},
+							{9,3,4,5,3,3,9},
+							{9,3,9,5,3,3,9},
+							{9,6,9,9,7,7,7},
+							{1,8,9,9,3,3,9},
+							{9,9,9,5,9,9,9},
+							{9,7,9,5,7,7,7},
+							{9,6,4,9,3,3,9},
+							{9,9,9,9,9,9,9}
+						};
+
+	static int tt_punto_3[4][4] =  {
+                            {2,1,2,2},
+                            {1,1,0,2},
+                            {2,2,2,2}
+                            }; 
+
+
 	int consigna_seleccionada;
 	int opc;
 	int seguir;
@@ -406,7 +438,11 @@ int main()
 		 
 		pedir_cadena(consigna_seleccionada, opc, cadena);
 
-		ejecutar_consigna(consigna_seleccionada, cadena);
+		if(consigna_seleccionada == 1){
+			ejecutar_consigna(consigna_seleccionada, cadena, 10, 7, tt_punto_1);
+		}else{
+			ejecutar_consigna(consigna_seleccionada, cadena, 4, 4, tt_punto_3);
+		}
 			
 		activar_opciones_seguir(&seguir);
 		

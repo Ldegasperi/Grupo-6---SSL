@@ -64,7 +64,7 @@ int evaluarPostfijo() {
                     resultado = a / b; 
                     break;
                 default:
-                    printf("Operador no válido: %s\n", token);
+                printf("Operador no válido: %s\n", token);
                     return 0;
             }
             push(&pila, resultado);
