@@ -3,14 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TOP DOWN
-/* int es_palabra(char* cadena, int tt[][], columna [])
-   typedef struct { char caracter, int valor } columna;
-   int columna (int c, columna []) {
-        algoritmo que busca el valor q le corresponde a ese caracter recorriendo la lista de columnas
-        return num_columna;
-   }
-*/
 int retornar_columna(int c, int consigna_seleccionada)
 {
 	if(consigna_seleccionada == 1){
@@ -23,40 +15,11 @@ int retornar_columna(int c, int consigna_seleccionada)
 		if(c >= 'A' && c <= 'F') return 6;
 		return 7;
 	}else{
-		if(c=='0') return 0;
-		if(c=='-' || c == '+' || c=='*' || c=='/') return 2;
-		if(c>='1' && c <= '9') return 1;
-		return 3;
+		if(c>='0' && c <= '9') return 0;
+		if(c=='-' || c == '+' || c=='*' || c=='/') return 1;
+		return 2;
 	}
-
-}
-
-
-/* PUNTO 1 */
-void contar_tipos(char* cadena, int* cant_hexadecimales, int* cant_octales, int* cant_decimales)
-{	
-	int i = 0;
-	char c = cadena[i]; 
-	int analizar = 1; // Pseudo booleano	
 	
-	while(c != '\0'){
-		
-		if(analizar == 1){
-			if(c != '0' || (c == '0' && cadena[i+1] == '#')){ // Decimales NO empiezan por cero
-				(*cant_decimales)++;
-			}else if(cadena[i+1] == 'x'){ // Si empieza por cero y ademas el caracter siguiente es una x
-				(*cant_hexadecimales)++;
-			}else{	 // Si empieza por cero y el caracter siguiente no es una x
-				(*cant_octales)++;
-			}
-			analizar = 0;	
-		}
-		
-		if(c == '#') analizar = 1;
-		
-		i++;
-		c = cadena[i]; 
-	}
 }
 
 int es_palabra(char* cadena, int filas, int columnas, int tt[filas][columnas], int consigna_seleccionada)
@@ -89,43 +52,32 @@ int es_palabra(char* cadena, int filas, int columnas, int tt[filas][columnas], i
 	}
 }
 
-/*
-int es_palabra_punto_uno(char* cadena, int consigna_seleccionada)
-{
-	int e = 0;						
-	int i = 0;					
-	char c = cadena[i];
-
-	static int tt[10][7] = 	{	// alfabeto ampliado, teniendo como ultima fila el estado de rechazo y como ultima columna a todo caracter que no pertenezca al lenguaje
-								{1,2,9,9,3,3,9},
-								{9,9,9,9,3,3,9},
-								{9,3,4,5,3,3,9},
-								{9,3,9,5,3,3,9},
-								{9,6,9,9,7,7,7},
-								{1,8,9,9,3,3,9},
-								{9,9,9,5,9,9,9},
-								{9,7,9,5,7,7,7},
-								{9,6,4,9,3,3,9},
-								{9,9,9,9,9,9,9}
-							};
+/* PUNTO 1 */
+void contar_tipos(char* cadena, int* cant_hexadecimales, int* cant_octales, int* cant_decimales)
+{	
+	int i = 0;
+	char c = cadena[i]; 
+	int analizar = 1; // Pseudo booleano	
 	
-	
-	// Para saber si tengo que seguir reconociendo o esperar al siguiente #
-	int contador = 1;
-	
-	while(c != '\0' && e != 9){
-		e = tt[e][retornar_columna(c, consigna_seleccionada)];	
+	while(c != '\0'){
+		
+		if(analizar == 1){
+			if(c != '0' || (c == '0' && cadena[i+1] == '#')){ // Decimales NO empiezan por cero
+				(*cant_decimales)++;
+			}else if(cadena[i+1] == 'x'){ // Si empieza por cero y ademas el caracter siguiente es una x
+				(*cant_hexadecimales)++;
+			}else{	 // Si empieza por cero y el caracter siguiente no es una x
+				(*cant_octales)++;
+			}
+			analizar = 0;	
+		}
+		
+		if(c == '#') analizar = 1;
+		
 		i++;
-		c = cadena[i];
+		c = cadena[i]; 
 	}
-	
-	if(e == 2 || e == 3 || e == 6 || e == 7) return 1; // Chequea que haya terminado en un estado final, en ese caso devuelve 1 (verdadero)
-	printf("La palabra no es válida.");
-	return 0;
 }
-*/
-
-
 /*FIN PUNTO 1*/
 
 /*PUNTO 2*/
@@ -133,31 +85,10 @@ int caracter_a_numero(char caracter)
 {
   return caracter - '0';
 }
-
 /*FIN PUNTO 2*/
 
 /*PUNTO 3*/
-/*
-int es_palabra_punto_tres(char* cadena, int consigna_seleccionada)
-{
-	static int tt[4][4] =  {
-                            {2,1,2,2},
-                            {1,1,0,2}, // Cambie estado 4 por 2 por simplicidad 
-                            {2,2,2,2}
-                            }; 
-    int e=0;
-    int i=0;
-    int c = cadena[i];
-    while(c != '\0' && e != 2)
-    {
-        e = tt[e][retornar_columna(c, consigna_seleccionada)];
-        i++;
-        c=cadena[i];
-    }
-    if(e==1) return 1; // Chequea que el estado en el cual termino se uno de aceptación
-    return 0;
-}
-*/
+
 // CODIGO PARA RESOLVER PRECEDENCIA DE OPERACIONES
 typedef struct Nodo {
     int info;
@@ -364,28 +295,21 @@ void ejecutar_consigna(int consigna_seleccionada, char* cadena, int filas, int c
 	printf("| Cadena testeada: "); printf("%-*s |\n", 66, cadena);
 	printf("|                                                                                     |\n");
 	printf("| Resultado: ");
-	if(consigna_seleccionada == 1){
-		if(es_palabra(cadena, filas, columnas, tt, consigna_seleccionada)) {
+	if(es_palabra(cadena, filas, columnas, tt, consigna_seleccionada)) {
+		printf("%-*s |\n", 72, "Es palabra del lenguaje");
+		printf("|                                                                                     |\n");
+		if(consigna_seleccionada == 1){
 			contar_tipos(cadena, &cant_hexadecimales, &cant_octales, &cant_decimales);
-			printf("%-*s |\n", 72, "Es palabra del lenguaje");
-			printf("|                                                                                     |\n");
 			printf("| Cantidad de decimales: "); printf("%-*d |\n", 60, cant_decimales);
 			printf("| Cantidad de octales: "); printf("%-*d |\n", 62, cant_octales);
 			printf("| Cantidad de hexadecimales: "); printf("%-*d |\n", 56, cant_hexadecimales);
-		} 
-		else{
-			printf("%-*s |\n", 72, "No es palabra del lenguaje");
-		} 
-	}else{
-		if(es_palabra(cadena, filas, columnas, tt, consigna_seleccionada)){
-    		char* posfijo = infixToPostfix(cadena);	
-			printf("%-*s |\n", 72, "Es palabra del lenguaje");
-			printf("|                                                                                     |\n");
+		}else if (consigna_seleccionada == 2){
+			char* posfijo = infixToPostfix(cadena);	
 			printf("| Resultado de la operacion: "); printf("%-*d |\n", 56, evaluarPostfijo(posfijo));
     		free(posfijo); // liberar memoria
-		}else{
-			printf("%-*s |\n", 72, "No es palabra del lenguaje");
 		}
+	}else{
+		printf("%-*s |\n", 72, "No es palabra del lenguaje");
 	}
 	printf("+-------------------------------------------------------------------------------------+\n");
 }
@@ -401,26 +325,24 @@ void activar_opciones_seguir(int* seguir)
 /*Main*/
 int main()
 {
-
-	static int tt_punto_1[10][7] = 	{	
-							{1,2,9,9,3,3,9},
-							{9,9,9,9,3,3,9},
-							{9,3,4,5,3,3,9},
-							{9,3,9,5,3,3,9},
-							{9,6,9,9,7,7,7},
-							{1,8,9,9,3,3,9},
-							{9,9,9,5,9,9,9},
-							{9,7,9,5,7,7,7},
-							{9,6,4,9,3,3,9},
-							{9,9,9,9,9,9,9}
+	static int tt_punto_1[10][8] = 	{	
+							{1,2,9,9,3,3,9,9},
+							{9,9,9,9,3,3,9,9},
+							{9,3,4,5,3,3,9,9},
+							{9,3,9,5,3,3,9,9},
+							{9,6,9,9,7,7,7,9},
+							{1,8,9,9,3,3,9,9},
+							{9,9,9,5,9,9,9,9},
+							{9,7,9,5,7,7,7,9},
+							{9,6,4,9,3,3,9,9},
+							{9,9,9,9,9,9,9,9}
 						};
 
-	static int tt_punto_3[4][4] =  {
-                            {2,1,2,2},
-                            {1,1,0,2},
-                            {2,2,2,2}
+	static int tt_punto_3[4][3] =  {
+                            {1,2,2},
+                            {2,0,2},
+                            {2,2,2}
                             }; 
-
 
 	int consigna_seleccionada;
 	int opc;
@@ -439,9 +361,9 @@ int main()
 		pedir_cadena(consigna_seleccionada, opc, cadena);
 
 		if(consigna_seleccionada == 1){
-			ejecutar_consigna(consigna_seleccionada, cadena, 10, 7, tt_punto_1);
-		}else{
-			ejecutar_consigna(consigna_seleccionada, cadena, 4, 4, tt_punto_3);
+			ejecutar_consigna(consigna_seleccionada, cadena, 10, 8, tt_punto_1);
+		}else if (consigna_seleccionada == 2){
+			ejecutar_consigna(consigna_seleccionada, cadena, 4, 3, tt_punto_3);
 		}
 			
 		activar_opciones_seguir(&seguir);
