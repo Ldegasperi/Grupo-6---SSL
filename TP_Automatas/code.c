@@ -12,7 +12,7 @@ int retornar_columna(int c, int consigna_seleccionada)
 		if(c == '#') return 3;
 		if(c >= '1' && c <= '7') return 4;
 		if(c == '8' || c == '9') return 5;
-		if(c >= 'A' && c <= 'F') return 6;
+		if((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f')) return 6;
 		return 7;
 	}else{
 		if(c>='0' && c <= '9') return 0;
@@ -32,12 +32,12 @@ int es_palabra(char* cadena, int filas, int columnas, int tt[filas][columnas], i
 	
 	if(consigna_seleccionada == 1)
 	{
-		while(c != '\0' && e != 9){
+		while(c != '\0' && e != 8){
 			e = tt[e][retornar_columna(c, consigna_seleccionada)];	
 			i++;
 			c = cadena[i];
 		}
-		if(e == 2 || e == 3 || e == 6 || e == 7) return 1; // Chequea que haya terminado en un estado final, en ese caso devuelve 1 (verdadero)
+		if(e == 2 || e == 3 || e == 5|| e == 6 || e == 7) return 1; // Chequea que haya terminado en un estado final, en ese caso devuelve 1 (verdadero)
 		return 0;
 	} else if (consigna_seleccionada == 2)
 	{
@@ -62,9 +62,9 @@ void contar_tipos(char* cadena, int* cant_hexadecimales, int* cant_octales, int*
 	while(c != '\0'){
 		
 		if(analizar == 1){
-			if(c != '0' || (c == '0' && cadena[i+1] == '#')){ // Decimales NO empiezan por cero
+			if(c != '0' || (c == '0' && (cadena[i+1] == '#' || cadena[i+1] == '\0' ))){ // Decimales NO empiezan por cero
 				(*cant_decimales)++;
-			}else if(cadena[i+1] == 'x'){ // Si empieza por cero y ademas el caracter siguiente es una x
+			}else if(cadena[i+1] == 'x' || cadena[i+1] == 'X'){ // Si empieza por cero y ademas el caracter siguiente es una x
 				(*cant_hexadecimales)++;
 			}else{	 // Si empieza por cero y el caracter siguiente no es una x
 				(*cant_octales)++;
@@ -325,23 +325,22 @@ void activar_opciones_seguir(int* seguir)
 /*Main*/
 int main()
 {
-	static int tt_punto_1[10][8] = 	{	
-							{1,2,9,9,3,3,9,9},
-							{9,9,9,9,3,3,9,9},
-							{9,3,4,5,3,3,9,9},
-							{9,3,9,5,3,3,9,9},
-							{9,6,9,9,7,7,7,9},
-							{1,8,9,9,3,3,9,9},
-							{9,9,9,5,9,9,9,9},
-							{9,7,9,5,7,7,7,9},
-							{9,6,4,9,3,3,9,9},
-							{9,9,9,9,9,9,9,9}
+	static int tt_punto_1[9][8] = 	{	
+							{1,	7,	8,	8,	2,	2,	8,	8},
+							{8,	8,	8,	8,	2,	2,	8,	8},
+							{8,	2,	8,	0,	2,	2,	8,	8},
+							{8,	8,	8,	0,	8,	8,	8,	8},
+							{8,	3,	8,	8,	6,	6,	6,	8},
+							{8,	5,	8,	0,	5,	8,	8,	8},
+							{8,	6,	8,	0,	6,	6,	6,	8},
+							{8,	3,	4,	0,	5,	8,	8,	8},
+							{8,	8,	8,	8,	8,	8,	8,	8}
 						};
 
 	static int tt_punto_3[4][3] =  {
-                            {1,2,2},
-                            {2,0,2},
-                            {2,2,2}
+                            {1,	2,	2},
+                            {2,	0,	2},
+                            {2,	2,	2}
                             }; 
 
 	int consigna_seleccionada;
@@ -361,7 +360,7 @@ int main()
 		pedir_cadena(consigna_seleccionada, opc, cadena);
 
 		if(consigna_seleccionada == 1){
-			ejecutar_consigna(consigna_seleccionada, cadena, 10, 8, tt_punto_1);
+			ejecutar_consigna(consigna_seleccionada, cadena, 9, 8, tt_punto_1);
 		}else if (consigna_seleccionada == 2){
 			ejecutar_consigna(consigna_seleccionada, cadena, 4, 3, tt_punto_3);
 		}
