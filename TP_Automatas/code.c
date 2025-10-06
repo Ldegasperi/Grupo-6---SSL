@@ -242,9 +242,9 @@ void pedir_opcion_menu(int cota_inferior, int cota_superior, int* opc)
 	}while(*opc < cota_inferior || *opc > cota_superior);
 }
 
-void activar_opciones_consigna_uno(int* opc)
+void activar_opciones_ingreso_cadena(int* opc)
 {
-	printf("\n+------------CONSIGNA 1-------------+\n");
+	printf("\n+--------------INGRESO--------------+\n");
 	printf("| De que forma ingresara la cadena? |\n");
 	printf("|                                   |\n");
 	printf("| 1 - Por linea de comando          |\n");
@@ -271,7 +271,7 @@ void* pedir_cadena(int consigna_seleccionada, int opc, char* cadena)
 {
 	char directorio_cadena[] = "./cadena.txt";
 	
-	if (consigna_seleccionada == 2 || opc == 1){
+	if (opc == 1){
 		printf("\nIngrese la cadena a continuacion: ");
 		scanf("%s", cadena); 
 	}else{
@@ -355,7 +355,7 @@ int main()
 		
 		imprimir_consigna_seleccionada(consigna_seleccionada);
 
-		if(consigna_seleccionada == 1) activar_opciones_consigna_uno(&opc);
+		activar_opciones_ingreso_cadena(&opc);
 		 
 		pedir_cadena(consigna_seleccionada, opc, cadena);
 
