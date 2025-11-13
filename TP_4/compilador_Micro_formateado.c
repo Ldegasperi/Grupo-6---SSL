@@ -423,7 +423,7 @@ void Colocar(char *id, RegTS *TS)
 void Chequear(char *s)
 {
     /* Si la cadena no esta en la Tabla de Simbolos la agrega,
-       y si es el nombre de una variable genera la instruccion */
+    y si es el nombre de una variable genera la instruccion */
     TOKEN t;
     if (!Buscar(s, TS, &t)) {
         Colocar(s, TS);
