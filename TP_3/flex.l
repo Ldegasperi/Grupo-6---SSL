@@ -11,12 +11,21 @@ IDENTIFICADOR {LETRA}({LETRA}|{DIGITO})*
 
 constEntera {DIGITO}({DIGITO})*
 %%
+<<EOF>> {return 0;}
 ":=" {return ASIGNACION;}
 {constEntera} {yylval.num=atoi(yytext);return CONSTANTE;}
-{IDENTIFICADOR} {return ID;}
+{IDENTIFICADOR} { yylval.identificador = yytext; 
+					if (strlen(yylval.identificador)>MAXID)
+						fprintf(stderr, “ID Supera los caracteres habilitados);
+					return ID; }
 ";" {return PYCOMA;}
+"," {return COMA;}
 "(" {return PARENIZQUIERDO;}
 ")" {return PARENDERECHO;}
 "+" {return SUMA;}
 "-" {return RESTA;}
+"inicio" {return INICIO;}
+"fin" {return FIN;}
+"escribir" {return ESCRIBIR;}
+"leer" {return LEER;}
 %%
