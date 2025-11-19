@@ -9,12 +9,8 @@ extern void yyerror(char*);
 int variable=0;
 %}
 %union{
-   char* cadena;
-   int num;
-} 
-%union{
-  char cadena[32]; /* para IDs */ 
-  int num;   /* para constantes */
+  char* cadena[32];  
+  int num;   
 }
 
 %token ASIGNACION PYCOMA SUMA RESTA PARENIZQUIERDO PARENDERECHO COMA
@@ -24,10 +20,14 @@ int variable=0;
 %token FIN
 %token LEER
 %token ESCRIBIR
-%token FDT /* token de eof */
+%token FDT 
+
 %%
-objetivo: programa FDT
-programa: INICIO sentencias FIN
+
+objetivo: programa FDT /* #terminar */
+;
+programa: INICIO sentencias FIN /* #comenzar */
+;
 sentencias: sentencias sentencia 
 |sentencia
 ;
@@ -35,19 +35,23 @@ sentencia: ID {printf("el id es: %s de longitud: %d ",yytext,yyleng);if(yyleng>1
 | LEER PARENIZQUIERDO listaIdentificadores PARENDERECHO PYCOMA
 | ESCRIBIR PARENIZQUIERDO listaIdentificadores PARENDERECHO PYCOMA
 ;
-listaIdentificadores: listaidentificadores COMA ID
-| ID
-expresiones: expresiones expresion
-| expresion
+listaIdentificadores: listaidentificadores COMA identificador
+| identificador /* #leerID */
+;
+identificador: ID {printf("id %d ",atoi(yytext),$1); }/* #procesarID */
+;
+expresiones: expresiones expresion /* #escribirExpresion */
+| expresion /* #escribirExpresion */
+;
 expresion: primaria 
-|expresion operadorAditivo primaria {$$ = $1 + $3}
+| expresion operadorAditivo primaria {$$ = $1 + $3} /* #genInfijo */
 ; 
 primaria: ID
-|CONSTANTE {printf("valores %d ",atoi(yytext),$1); }
-|PARENIZQUIERDO expresion PARENDERECHO
+| CONSTANTE {printf("valores %d ",atoi(yytext),$1); } /* #procesarConstante */
+| PARENIZQUIERDO expresion PARENDERECHO 
 ;
-operadorAditivo: SUMA 
-| RESTA
+operadorAditivo: SUMA /* #procesarOperador */
+| RESTA /* #procesarOperador */
 ;
 %%
 int main() {
