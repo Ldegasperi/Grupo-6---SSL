@@ -1,0 +1,3 @@
+inicio
+escribir(A+B-D);
+fin

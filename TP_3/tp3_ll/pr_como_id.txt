@@ -1,0 +1,3 @@
+inicio
+hola:=leer-34+AA;
+fin

@@ -1,0 +1,3 @@
+inicio
+leer(hola,como,estas);
+fin
