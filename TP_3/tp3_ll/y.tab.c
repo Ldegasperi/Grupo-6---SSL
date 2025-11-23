@@ -101,6 +101,7 @@ char* operando_der = "";
 char* registro_expresion ="";
 int numero_temporales = 1;
 int indice_ts = 0;
+int constante_procesada = 0;
 
 int buscar(char* cadena){
     for(int i = 0; i < indice_ts; i++){
@@ -130,8 +131,8 @@ void chequear(char* cadena, int tipo){
 
 void procesar_id(char* cadena){
   if (strlen(cadena) > MAXIMO_CARACTERES_ID){
-  yyerror("Identificador supera largo maximo");
-  cadena[MAXIMO_CARACTERES_ID] = '\0';
+    yyerror("Identificador supera largo maximo");
+    cadena[MAXIMO_CARACTERES_ID] = '\0';
   } 
   chequear(cadena, IDENTIFICADOR);
 }
@@ -194,7 +195,7 @@ int pr_en_yytext(){
 
 
 /* Line 189 of yacc.c  */
-#line 198 "y.tab.c"
+#line 199 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -261,14 +262,14 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 125 "bisonBasico.y"
+#line 126 "bisonBasico.y"
 
    char* cadena;
 
 
 
 /* Line 214 of yacc.c  */
-#line 272 "y.tab.c"
+#line 273 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -280,7 +281,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 284 "y.tab.c"
+#line 285 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -571,9 +572,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   134,   134,   136,   136,   138,   139,   141,   141,   142,
-     143,   146,   147,   149,   150,   152,   153,   155,   156,   157,
-     159,   160,   162
+       0,   136,   136,   138,   138,   140,   141,   143,   143,   144,
+     145,   147,   148,   150,   151,   153,   154,   156,   157,   158,
+     160,   161,   163
 };
 #endif
 
@@ -1497,91 +1498,98 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 134 "bisonBasico.y"
+#line 136 "bisonBasico.y"
     {finalizar();}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 136 "bisonBasico.y"
-    { cargar_prs_en_ts(); /* innecesario porque ya esta en el flex esto */}
+#line 138 "bisonBasico.y"
+    { cargar_prs_en_ts(); /* esto ya lo hace flex */}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 141 "bisonBasico.y"
-    { asignar((yyvsp[(1) - (3)].cadena)); }
+#line 143 "bisonBasico.y"
+    {asignar((yyvsp[(1) - (3)].cadena));}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 146 "bisonBasico.y"
+#line 147 "bisonBasico.y"
     {leer_id((yyvsp[(1) - (1)].cadena));}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 147 "bisonBasico.y"
+#line 148 "bisonBasico.y"
     {leer_id((yyvsp[(3) - (3)].cadena));}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 149 "bisonBasico.y"
+#line 150 "bisonBasico.y"
     {escribir_exp((yyvsp[(1) - (1)].cadena));}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 150 "bisonBasico.y"
+#line 151 "bisonBasico.y"
     {escribir_exp((yyvsp[(3) - (3)].cadena));}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 152 "bisonBasico.y"
+#line 153 "bisonBasico.y"
     {operando_izq = (yyvsp[(1) - (1)].cadena);}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 153 "bisonBasico.y"
+#line 154 "bisonBasico.y"
     {operando_der = (yyvsp[(3) - (3)].cadena); (yyval.cadena) = gen_infijo();}
+    break;
+
+  case 18:
+
+/* Line 1455 of yacc.c  */
+#line 157 "bisonBasico.y"
+    {constante_procesada = atoi((yyvsp[(1) - (1)].cadena));}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 159 "bisonBasico.y"
+#line 160 "bisonBasico.y"
     {operacion = "Sumar";}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 160 "bisonBasico.y"
+#line 161 "bisonBasico.y"
     {operacion = "Restar";}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 162 "bisonBasico.y"
+#line 163 "bisonBasico.y"
     {procesar_id((yyvsp[(1) - (1)].cadena));}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1585 "y.tab.c"
+#line 1593 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1801,13 +1809,7 @@ yyparse();
 }
 
 void yyerror (char *s){
-if((strcmp(yytext, "inicio") == 0 || strcmp(yytext, "fin") == 0 || strcmp(yytext, "leer") == 0 || strcmp(yytext, "escribir") == 0)){
-    printf ("Se utilizo palabra reservada como identificador: %s\n", yytext);
-    return;
-}else{
-    printf ("[ERROR: %s]\n",yytext);
-}
-  
+    printf ("[ERROR: %s]\n",s);
 }
 
 int yywrap()  {

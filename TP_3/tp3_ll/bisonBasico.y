@@ -60,8 +60,8 @@ void chequear(char* cadena, int tipo){
 
 void procesar_id(char* cadena){
   if (strlen(cadena) > MAXIMO_CARACTERES_ID){
-  yyerror("Identificador supera largo maximo");
-  cadena[MAXIMO_CARACTERES_ID] = '\0';
+    yyerror("Identificador supera largo maximo");
+    cadena[MAXIMO_CARACTERES_ID] = '\0';
   } 
   chequear(cadena, IDENTIFICADOR);
 }
@@ -170,12 +170,7 @@ yyparse();
 }
 
 void yyerror (char *s){
-  if(pr_en_yytext()){
-      printf ("Se utilizo palabra reservada como identificador: %s\n", yytext);
-      return;
-  }else{
-      printf ("[ERROR: %s]\n",yytext);
-  }
+    printf ("[ERROR: %s]\n",s);
 }
 
 int yywrap()  {

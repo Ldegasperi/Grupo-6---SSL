@@ -286,8 +286,8 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 #define YY_END_OF_BUFFER 17
 static yyconst short int yy_accept[41] =
     {   0,
-        0,    0,   17,   14,   14,   15,   10,   11,   12,    9,
-       13,    6,   14,    8,    7,    7,    7,    7,    7,    6,
+        0,    0,   17,   15,   14,   14,   10,   11,   12,    9,
+       13,    6,   15,    8,    7,    7,    7,    7,    7,    6,
         1,    7,    7,    7,    7,    7,    7,    3,    7,    7,
         7,    7,    4,    7,    7,    7,    2,    7,    5,    0
     } ;
@@ -698,12 +698,12 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 32 "flexBasico.l"
-{fprintf(stderr, "[ERROR: Caracter espurio al lenguaje]\n" );}
+{}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 33 "flexBasico.l"
-{}
+{fprintf(stderr, "[ERROR: Caracter espurio al lenguaje]\n" );}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 34 "flexBasico.l"
