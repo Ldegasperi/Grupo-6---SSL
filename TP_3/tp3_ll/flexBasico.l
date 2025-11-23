@@ -31,6 +31,6 @@ CONSTANTE {DIGITO}({DIGITO})*
 "-" {return RESTA;}
 "=:" {fprintf(stderr, "[ERROR: Quizá quisiste poner := ...?]\n" );}
 [ \t\n] {}
-. {fprintf(stderr, "[ERROR: Caracter espurio al lenguaje]\n" );}
+. {fprintf(stderr, "[ERROR: Caracter espurio al lenguaje: %s]\n", yytext );}
 <<EOF>> {return 0;}
 %%
