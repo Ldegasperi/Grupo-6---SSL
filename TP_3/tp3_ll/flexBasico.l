@@ -29,7 +29,7 @@ CONSTANTE {DIGITO}({DIGITO})*
 ")" {return PDER;}
 "+" {return SUMA;}
 "-" {return RESTA;}
-"=:" {fprintf(stderr, "[ERROR: Quizá quisiste poner := ...?]\n" );}
+"=:" {fprintf(stderr, "[ERROR: Asignando con =: | Quizas quisiste poner := ...?]\n" );}
 [ \t\n] {}
 . {fprintf(stderr, "[ERROR: Caracter espurio al lenguaje: %s]\n", yytext );}
 <<EOF>> {return 0;}

@@ -1548,7 +1548,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 153 "bisonBasico.y"
-    {operando_izq = (yyvsp[(1) - (1)].cadena);}
+    {registro_expresion = (yyvsp[(1) - (1)].cadena); operando_izq = (yyvsp[(1) - (1)].cadena);}
     break;
 
   case 16:
@@ -1562,7 +1562,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 157 "bisonBasico.y"
-    {constante_procesada = atoi((yyvsp[(1) - (1)].cadena));}
+    {(yyval.cadena) = (yyvsp[(1) - (1)].cadena); constante_procesada = atoi((yyvsp[(1) - (1)].cadena));}
     break;
 
   case 20:

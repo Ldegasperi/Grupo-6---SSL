@@ -150,11 +150,11 @@ identificadores: identificador {leer_id($1);}
 expresiones: expresion {escribir_exp($1);} 
            | expresiones COMA expresion {escribir_exp($3);} 
 ;
-expresion: primaria {operando_izq = $1;}
+expresion: primaria {registro_expresion = $1; operando_izq = $1;}
          | expresion operadorAditivo primaria {operando_der = $3; $$ = gen_infijo();} 
 ;
 primaria: identificador
-        | CONSTANTE {constante_procesada = atoi($1);}
+        | CONSTANTE {$$ = $1; constante_procesada = atoi($1);}
         | PIZQ expresion PDER
 ;
 operadorAditivo: SUMA {operacion = "Sumar";} 
