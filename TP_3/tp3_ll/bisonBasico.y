@@ -121,6 +121,7 @@ void escribir_exp(char* exp){
 int pr_en_yytext(){
   return (strcmp(yytext, "inicio") == 0 || strcmp(yytext, "fin") == 0 || strcmp(yytext, "leer") == 0 || strcmp(yytext, "escribir") == 0);
 }
+
 %}
 
 %union{
@@ -140,9 +141,10 @@ programa: { cargar_prs_en_ts(); /* esto ya lo hace flex */} INICIO sentencias FI
 sentencias: sentencias sentencia 
 |sentencia
 ;
-sentencia: identificador ASIGNACION expresion {asignar($1);} PYCOMA
-         | LEER PIZQ identificadores PDER PYCOMA
-         | ESCRIBIR PIZQ expresiones PDER PYCOMA
+sentencia: {if(yychar == INICIO || yychar == FIN || yychar == LEER || yychar == ESCRIBIR) yyerror("Se esperaba un identificador, se recibio una palabra reservada");} identificador ASIGNACION expresion {asignar($2);  if(yychar != PYCOMA){yyerror("Falta punto y coma al final de la sentencia");}} PYCOMA
+         | LEER PIZQ identificadores PDER {if(yychar != PYCOMA){yyerror("Falta punto y coma al final de la sentencia");}} PYCOMA
+         | ESCRIBIR PIZQ expresiones PDER {if(yychar != PYCOMA){yyerror("Falta punto y coma al final de la sentencia");}} PYCOMA
+        
 ;
 identificadores: identificador {leer_id($1);} 
                | identificadores COMA identificador {leer_id($3);} 
